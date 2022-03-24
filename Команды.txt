@@ -44,3 +44,16 @@ Author.objects.get(id =2).update_rating()
 for i in Author.objects.order_by('-ratingAuth')[:1]:
     i.ratingAuth
     i.authUser.username
+
+for i in Post.objects.order_by('-rating')[:1]:
+    i.dateCreation
+    i.auth.authUser.username
+    i.rating
+    i.title
+    i.preview()    
+
+for i in Post.objects.order_by('-rating')[:1]:
+    Comment.objects.get(commentPost = i.id).dateCreation
+    Comment.objects.get(commentPost = i.id).commentUser.username
+    Comment.objects.get(commentPost = i.id).rating
+    Comment.objects.get(commentPost = i.id).text
