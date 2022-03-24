@@ -1,0 +1,13 @@
+from news.models import *
+u1 = User.objects.create_user(username = 'Roma')
+Author.objects.create_user(username = 'Roma')
+
+
+Category.objects.create(name = 'IT')
+Category.objects.create(name = 'Politics')
+Category.objects.create(name = 'Economy')
+Category.objects.create(name = 'Аinance')
+
+author = Author.objects.get(id=1)
+
+Post.objects.create(author = author, categoryType = 'NW', title = 'sometitle', text = 'sometext')
