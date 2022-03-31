@@ -10,5 +10,5 @@ def censor(value):
    exceptional_words = ['sometext', 'sometitle']
    for i in exceptional_words:
       value = value.replace(i, '*'*(len(i)-1))
-      value = value.replace(i.capitalize(), '*'*len(i))
+      value = value.replace(i.capitalize(), '*'*(len(i)-1))
    return f'{value}'
