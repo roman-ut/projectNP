@@ -4,49 +4,36 @@
 
 {% block content %}
 
-
-<!-- Перед таблицей добавим форму для поиска -->
 <form method="GET">
-    {{ filter.form }} <!-- Форму от фильтров за нас сделает django. А вот кнопку, увы придётся делать самому -->
+    {{ filter.form }}
     <input type="submit" value="Найти">
 </form>
 
 <table>
-   <tr>
-       <td>Заголовок</td>
-       <td>Дата публикации</td>
-       <td>Текст</td>
-   </tr>
-
-   {% for new in search %}
-   <tr>
-       <td>{{ new.title }}</td>
-       <td>{{ new.dateCreation|date:'d M Y' }}</td>
-       <td>{{ new.text }}</td>
-   </tr>
-   {% endfor %}
-
+    <thead>
+        <th>
+            Дата публикации
+        </th>
+        <th>
+            Заголовок
+        </th>
+        <th>
+            Имя пользователя
+        </th>
+    </thead>
+    {% for search in filter.qs %}
+    <tr>
+        <td>
+            {{ search.dateCreation }}
+        </td>
+        <td>
+            {{ search.title }}
+        </td>
+        <td>
+            {{ search.auth }}
+        </td>
+    </tr>
+    {% endfor %}
 </table>
 
-{% if is_paginated %}
-
-    {% if page_obj.has_previous %}
-        <a href="?page=1">First</a>
-        <a href="?page={{ page_obj.previous_page_number }}"><<<</a>
-    {% endif %}
-
-    {% for num in page_obj.paginator.page_range %}
-        {% if page_obj.number == num %}
-            <a>{{ num }}</a>
-        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-            <a href="?page={{ num }}">{{ num }}</a>
-        {% endif %}
-    {% endfor %}
-
-    {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">>>></a>
-        <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-    {% endif %}
-
-{% endif %}
 {% endblock content %}

@@ -2,11 +2,13 @@ from django.views.generic import ListView, DetailView
 from .models import Post
 from .filters import NewsFilter
 
+
 class NewsList(ListView):
     model = Post
     ordering = 'dateCreation'
     template_name = 'news.html'
     context_object_name = 'news'
+    paginate_by = 1
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -24,7 +26,6 @@ class Search(ListView):
     template_name = 'search.html'
     context_object_name = 'search'
     ordering = ['-dateCreation']
-    paginate_by = 1  # поставим постраничный вывод в один элемент
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
