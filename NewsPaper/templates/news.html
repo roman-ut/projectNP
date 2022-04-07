@@ -1,43 +1,44 @@
 {% extends 'flatpages/default.html' %}
-{% load _filters %}
-{% block title %}
-News
-{% endblock title %}
+
+{% block title %} News list {% endblock title %}
 
 {% block content %}
-   <h1>Все новости</h1>
-    <h3>{{ news|length }}</h3>
-   <hr>
-   {% if news %}
-        <table>
-            <thead>
-                <th>
-                    Заголовок
-                </th>
-                <th>
-                    Дата публикации
-                </th>
-                <th>
-                    Текст
-                </th>
-            </thead>
-            {% for new in news %}
-            <tr>
-                <td>
-                    {{ new.title|censor}}
-                </td>
-                <td>
-                    {{ new.dateCreation|date:'d M Y' }}
-                </td>
-                <td>
-                    {{ new.text|censor|truncatewords:20 }}
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-   {% else %}
-       <h2>Новостей нет!</h2>
-   {% endif %}
+
+<table>
+    <thead>
+        <th>
+            Заголовок
+        </th>
+        <th>
+            Дата публикации
+        </th>
+        <th>
+            Текст
+        </th>
+    </thead>
+    {% for news in filter.qs %}
+    <tr>
+        <td>
+            <a href="{% url 'new' news.id %}">{{ news.title|title }}</a>
+            <a href="{% url 'news_update' news.id %}"><u>Редактировать</u></a>
+
+            <a href="{% url 'news_delete' news.id %}"><u> Удалить </u></a>
+        </td>
+        <td>
+            {{ news.title|title }}
+        </td>
+        <td>
+            {{ news.dateCreation|date:'d M Y' }}
+        </td>
+        <td>
+            {{ product.text }}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<a href="{% url 'news_create' %}">Добавить новый товар</a> <br>
+
 
 {% if is_paginated %}
 
@@ -58,7 +59,7 @@ News
         <a href="?page={{ page_obj.next_page_number }}">>>></a>
         <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
     {% endif %}
-
 {% endif %}
+<br>
 
 {% endblock content %}

@@ -3,7 +3,7 @@
 {% block title %} News list {% endblock title %}
 
 {% block content %}
-
+<h2>Вы действительно хотите удалить данную статью?</h2>
 <table>
     <thead>
         <th>
@@ -13,19 +13,23 @@
             Заголовок
         </th>
         <th>
-            Текст новости
+            Имя пользователя
         </th>
     </thead>
     <tr>
         <td>
-            {{ post.dateCreation|date:'d M Y' }}
+            {{ post.dateCreation }}
         </td>
         <td>
             {{ post.title|title }}
         </td>
         <td>
-            {{ post.text|title }}
+            {{ post.auth }}
         </td>
     </tr>
 </table>
+
+<form method="POST">
+    {% csrf_token %}
+    <input type="submit" value="подтвердить"></form>
 {% endblock content %}
