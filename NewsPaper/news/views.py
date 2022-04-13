@@ -1,11 +1,12 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render
-from django.views.generic import ListView, UpdateView, CreateView, DetailView, DeleteView  # импортируем необходимые дженерики
+from django.views.generic import ListView, UpdateView, CreateView, DetailView, DeleteView
 
 from django.core.paginator import Paginator
 
 from .models import Post, PostCategory
 from .filters import NewsFilter
-from .forms import NewsForm
+from .forms import NewsForm, AuthorForm
 
 
 class NewsList(ListView):
@@ -38,17 +39,25 @@ class Search(ListView):
         return context
 
 
-class NewsCreateView(CreateView):
+class UserUpdateView(LoginRequiredMixin, UpdateView):
+    template_name = 'author_update.html'
+    form_class = AuthorForm
+
+    def get_object(self, **kwargs):
+        return self.request.user
+
+
+class NewsCreateView(PermissionRequiredMixin, CreateView):
     template_name = 'add.html'
     form_class = NewsForm
+    permission_required = ('news.add_post', )
 
 
-# дженерик для редактирования объекта
-class NewsUpdateView(UpdateView):
+class NewsUpdateView(PermissionRequiredMixin, UpdateView):
     template_name = 'add.html'
     form_class = NewsForm
+    permission_required = ('news.change_post',)
 
-    # метод get_object мы используем вместо queryset, чтобы получить информацию об объекте, который мы собираемся редактировать
     def get_object(self, **kwargs):
         id = self.kwargs.get('pk')
         return Post.objects.get(pk=id)

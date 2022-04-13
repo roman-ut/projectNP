@@ -1,5 +1,5 @@
 from django.forms import ModelForm, BooleanField  # Импортируем true-false поле
-from .models import Post
+from .models import Post, Author
 
 
 class NewsForm(ModelForm):
@@ -8,4 +8,11 @@ class NewsForm(ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'text', 'auth',
-                  'check_box']  # не забываем включить галочку в поля иначе она не будет показываться на странице!
+                  'check_box']
+
+
+class AuthorForm(ModelForm):
+
+    class Meta:
+        model = Author
+        fields = '__all__'
