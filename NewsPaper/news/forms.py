@@ -1,5 +1,5 @@
 from django.forms import ModelForm, BooleanField  # Импортируем true-false поле
-from .models import Post, Author
+from .models import Post, Author, Category
 
 
 class NewsForm(ModelForm):
@@ -16,3 +16,4 @@ class AuthorForm(ModelForm):
     class Meta:
         model = Author
         fields = '__all__'
+

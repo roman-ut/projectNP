@@ -4,7 +4,7 @@ from django.views.generic import ListView, UpdateView, CreateView, DetailView, D
 
 from django.core.paginator import Paginator
 
-from .models import Post, PostCategory
+from .models import Post, PostCategory,Category
 from .filters import NewsFilter
 from .forms import NewsForm, AuthorForm
 
@@ -63,10 +63,13 @@ class NewsUpdateView(PermissionRequiredMixin, UpdateView):
         return Post.objects.get(pk=id)
 
 
-# дженерик для удаления товара
-class NewsDeleteView(DeleteView):
+class NewsDeleteView(PermissionRequiredMixin, DeleteView):
     template_name = 'delete.html'
     queryset = Post.objects.all()
     success_url = '/news/'
+    permission_required = ('news.delete_post',)
+
+
+
 
 

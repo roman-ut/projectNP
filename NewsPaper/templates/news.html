@@ -15,6 +15,9 @@
         <th>
             Текст
         </th>
+        <th>
+            Категории
+        </th>
     </thead>
     {% for news in filter.qs %}
     <tr>
@@ -25,20 +28,22 @@
             <a href="{% url 'news_delete' news.id %}"><u> Удалить </u></a>
         </td>
         <td>
-            {{ news.title|title }}
-        </td>
-        <td>
             {{ news.dateCreation|date:'d M Y' }}
         </td>
         <td>
-            {{ product.text }}
+            {{ news.title|title }}
+        </td>
+        <td>
+            {% for i in news.postCategory.all %}
+                {{ i }}
+            {% endfor %}
         </td>
     </tr>
     {% endfor %}
 </table>
 
-<a href="{% url 'news_create' %}">Добавить новый товар</a> <br>
-
+<a href="{% url 'news_create' %}"> Добавить новость! </a> <br>
+<a href="{% url 'news_create' %}"> Подписаться на рассылку новостей ! </a> <br>
 
 {% if is_paginated %}
 

@@ -25,8 +25,10 @@ class Author(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=64, unique=True)
+    subscribers = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
 
-    pass
+    def __str__(self):
+        return f'{self.name}'
 
 
 class Post(models.Model):
