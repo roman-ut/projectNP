@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
 ]
 
+DEFAULT_FROM_EMAIL = 'Utochkin.rcoko92@yandex.ru'
 SITE_ID = 1
 
 MIDDLEWARE = [
@@ -153,9 +154,9 @@ LOGIN_URL = '/accounts/login/'
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_FORMS = {'signup': 'sign.models.BasicSignupForm'}
 
 

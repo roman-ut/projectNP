@@ -1,4 +1,6 @@
-from django.forms import ModelForm, BooleanField  # Импортируем true-false поле
+from django.forms import ModelForm, BooleanField   # Импортируем true-false поле
+
+
 from .models import Post, Author, Category
 
 
@@ -17,3 +19,9 @@ class AuthorForm(ModelForm):
         model = Author
         fields = '__all__'
 
+
+class SubscribeForm(ModelForm):
+
+    class Meta:
+        model = Category
+        fields = ['name']

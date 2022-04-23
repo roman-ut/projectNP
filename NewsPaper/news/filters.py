@@ -1,5 +1,5 @@
 from django_filters import FilterSet
-from .models import Post
+from .models import Post, Category
 
 
 class NewsFilter(FilterSet):
@@ -10,3 +10,5 @@ class NewsFilter(FilterSet):
             'title': ['icontains'],
             'auth': ['exact'],
         }
+
+

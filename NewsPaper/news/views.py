@@ -1,12 +1,12 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render
-from django.views.generic import ListView, UpdateView, CreateView, DetailView, DeleteView
+from django.views.generic import ListView, UpdateView, CreateView, DetailView, DeleteView, FormView
 
 from django.core.paginator import Paginator
 
-from .models import Post, PostCategory,Category
+from .models import Post, PostCategory, Category
 from .filters import NewsFilter
-from .forms import NewsForm, AuthorForm
+from .forms import NewsForm, AuthorForm, SubscribeForm
 
 
 class NewsList(ListView):
@@ -14,7 +14,7 @@ class NewsList(ListView):
     ordering = 'dateCreation'
     template_name = 'news.html'
     context_object_name = 'news'
-    paginate_by = 1
+    paginate_by = 10
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -68,6 +68,22 @@ class NewsDeleteView(PermissionRequiredMixin, DeleteView):
     queryset = Post.objects.all()
     success_url = '/news/'
     permission_required = ('news.delete_post',)
+
+
+class CategoryList(ListView):
+    model = Category
+    ordering = 'name'
+    template_name = 'category.html'
+    context_object_name = 'category'
+    paginate_by = 10
+
+
+class SubscribeCreate(PermissionRequiredMixin, CreateView):
+    template_name = 'subscribe.html'
+    form_class = SubscribeForm
+    permission_required = ('news.add_post', )
+
+
 
 
 
