@@ -1,9 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render
 from django.views.generic import ListView, UpdateView, CreateView, DetailView, DeleteView, FormView
-
+from django.shortcuts import redirect
 from django.core.paginator import Paginator
-
+from django.contrib.auth.decorators import login_required
 from .models import Post, PostCategory, Category
 from .filters import NewsFilter
 from .forms import NewsForm, AuthorForm, SubscribeForm
@@ -78,11 +78,19 @@ class CategoryList(ListView):
     paginate_by = 10
 
 
-class SubscribeCreate(PermissionRequiredMixin, CreateView):
+class Subscribe (UpdateView):
     template_name = 'subscribe.html'
-    form_class = SubscribeForm
-    permission_required = ('news.add_post', )
+    queryset = Category.objects.all()
+    success_url = '/news/'
 
+
+@login_required
+def add_subscribe(request):
+    a = request.user
+    a.save()
+    b = Category.objects.get(pk=request.POST['pk'])
+    b.subscribers.add(a)
+    return redirect('/news/')
 
 
 
