@@ -9,6 +9,7 @@ class NewsFilter(FilterSet):
             'dateCreation': ['gt'],
             'title': ['icontains'],
             'auth': ['exact'],
+            'postCategory':['exact'],
         }
 
 

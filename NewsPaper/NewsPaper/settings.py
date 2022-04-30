@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.flatpages',
-    'news',
+    'news.apps.NewsConfig',
     'accounts',
     'django_filters',
     'sign',
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'django_apscheduler',
 ]
 
 DEFAULT_FROM_EMAIL = 'Utochkin.rcoko92@yandex.ru'
@@ -147,7 +148,6 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
-
 LOGIN_REDIRECT_URL = '/news/'
 
 LOGIN_URL = '/accounts/login/'
@@ -159,4 +159,14 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_FORMS = {'signup': 'sign.models.BasicSignupForm'}
 
-
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'utochkin.rcoko92'
+EMAIL_HOST_PASSWORD = 'rucqxgqlgyfkrwks'
+EMAIL_USE_SSL = True
+ADMINS = [
+    ('Roman', 'utochkin.rcoko92@yandex.ru'),
+]
+SERVER_EMAIL = 'utochkin.rcoko92@yandex.ru'
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+APSCHEDULER_RUN_NOW_TIMEOUT = 25

@@ -9,7 +9,7 @@ class NewsForm(ModelForm):
 
     class Meta:
         model = Post
-        fields = ['title', 'text', 'auth',
+        fields = ['title', 'text', 'auth', 'postCategory',
                   'check_box']
 
 

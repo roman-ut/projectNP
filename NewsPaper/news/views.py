@@ -4,9 +4,10 @@ from django.views.generic import ListView, UpdateView, CreateView, DetailView, D
 from django.shortcuts import redirect
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from .models import Post, PostCategory, Category
+from .models import Post, PostCategory, Category, User
 from .filters import NewsFilter
 from .forms import NewsForm, AuthorForm, SubscribeForm
+from django.template.loader import render_to_string
 
 
 class NewsList(ListView):
@@ -85,12 +86,13 @@ class Subscribe (UpdateView):
 
 
 @login_required
-def add_subscribe(request):
+def add_subscribe(request, pk):
     a = request.user
-    a.save()
-    b = Category.objects.get(pk=request.POST['pk'])
+    # a.save()
+    b = Category.objects.get(id=pk)
     b.subscribers.add(a)
     return redirect('/news/')
+
 
 
 
