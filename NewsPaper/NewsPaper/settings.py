@@ -162,7 +162,7 @@ ACCOUNT_FORMS = {'signup': 'sign.models.BasicSignupForm'}
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'utochkin.rcoko92'
-EMAIL_HOST_PASSWORD = 'rucqxgqlgyfkrwks'
+EMAIL_HOST_PASSWORD = '*'
 EMAIL_USE_SSL = True
 ADMINS = [
     ('Roman', 'utochkin.rcoko92@yandex.ru'),
@@ -170,3 +170,11 @@ ADMINS = [
 SERVER_EMAIL = 'utochkin.rcoko92@yandex.ru'
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 APSCHEDULER_RUN_NOW_TIMEOUT = 25
+
+CELERY_BROKER_URL = 'redis://:*@' \
+                    'redis-15482.c257.us-east-1-3.ec2.cloud.redislabs.com:15482/0'
+CELERY_RESULT_BACKEND = 'redis://:*@' \
+                    'redis-15482.c257.us-east-1-3.ec2.cloud.redislabs.com:15482/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
