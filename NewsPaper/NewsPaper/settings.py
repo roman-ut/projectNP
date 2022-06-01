@@ -10,11 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
+from dotenv import load_dotenv
 from pathlib import Path
+
+load_dotenv()
+env_path = Path('.')/'.env'
+load_dotenv(dotenv_path=env_path)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -100,7 +104,16 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'postgres',
+#         'USER': 'postgres',
+#         'PASSWORD': '',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     },
+# }
 
 
 # Password validation
@@ -162,19 +175,138 @@ ACCOUNT_FORMS = {'signup': 'sign.models.BasicSignupForm'}
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'utochkin.rcoko92'
-EMAIL_HOST_PASSWORD = '*'
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_USE_SSL = True
 ADMINS = [
     ('Roman', 'utochkin.rcoko92@yandex.ru'),
 ]
-SERVER_EMAIL = 'utochkin.rcoko92@yandex.ru'
+SERVER_EMAIL = os.getenv("SERVER_EMAIL")
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 APSCHEDULER_RUN_NOW_TIMEOUT = 25
 
-CELERY_BROKER_URL = 'redis://:*@' \
-                    'redis-15482.c257.us-east-1-3.ec2.cloud.redislabs.com:15482/0'
-CELERY_RESULT_BACKEND = 'redis://:*@' \
-                    'redis-15482.c257.us-east-1-3.ec2.cloud.redislabs.com:15482/0'
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_BROKER_BACKEND")
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'cache_files'),
+    }
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'console_WARNING', 'console_ERROR', 'news'],
+            'level': 'DEBUG',
+        },
+        'django.server': {
+            'handlers': ['news_errors', 'mail_admins'],
+            'level': 'ERROR',
+        },
+        'django.template': {
+            'handlers': ['news_errors'],
+            'level': 'ERROR',
+        },
+        'django.db_backends': {
+            'handlers': ['news_errors'],
+            'level': 'ERROR',
+        },
+        'django.request': {
+            'handlers': ['news_errors', 'mail_admins'],
+            'level': 'ERROR',
+        },
+        'django.security': {
+            'handlers': ['news_security'],
+            'level': 'DEBUG',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'myformat',
+            'filters': ['require_debug_true'],
+        },
+        'console_WARNING': {
+            'level': 'WARNING',
+            'class': 'logging.StreamHandler',
+            'formatter': 'myformat_WARNING',
+            'filters': ['require_debug_true'],
+        },
+        'console_ERROR': {
+            'level': 'ERROR',
+            'class': 'logging.StreamHandler',
+            'formatter': 'myformat_ERROR',
+            'filters': ['require_debug_true'],
+        },
+        'news': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'general.log',
+            'formatter': 'myformat_INFO',
+            'filters': ['require_debug_true'],
+        },
+        'news_errors': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': 'errors.log',
+            'formatter': 'myformat_ERROR_file',
+        },
+        'news_security': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'security.log',
+            'formatter': 'myformat_INFO'
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'formatter': 'myformat_ERROR_mail',
+            'filters': ['require_debug_false'],
+        }
+    },
+    'formatters': {
+        'myformat': {
+            'format': '{asctime} {levelname} {message}',
+            'datetime': '%Y.%m.%d %H:%M:%S',
+            'style': '{',
+        },
+        'myformat_WARNING': {
+            'format': '{pathname}',
+            'style': '{',
+        },
+        'myformat_ERROR': {
+            'format': '{exc_info}',
+            'style': '{',
+        },
+        'myformat_INFO': {
+            'format': '{asctime} {levelname} {module} {message}',
+            'datetime': '%Y.%m.%d %H:%M:%S',
+            'style': '{',
+        },
+        'myformat_ERROR_file': {
+            'format': '{asctime} {levelname} {message} {pathname} {exc_info}',
+            'datetime': '%Y.%m.%d %H:%M:%S',
+            'style': '{',
+        },
+        'myformat_ERROR_mail': {
+            'format': '{asctime} {levelname} {message} {pathname} {exc_info}',
+            'datetime': '%Y.%m.%d %H:%M:%S',
+            'style': '{',
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+    },
+}

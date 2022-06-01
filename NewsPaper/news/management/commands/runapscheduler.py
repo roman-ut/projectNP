@@ -9,6 +9,7 @@ from django.core.management.base import BaseCommand
 from django_apscheduler.jobstores import DjangoJobStore
 from django_apscheduler.models import DjangoJobExecution
 from django.core.mail import send_mail
+from django.shortcuts import render
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +17,7 @@ logger = logging.getLogger(__name__)
 # наша задача по выводу текста на экран
 def my_job():
     #  Your job processing logic here...
-    startdate = datetime.date.today() - datetime.timedelta(days=6)
+    startdate = datetime.date.today() - datetime.timedelta(weeks=1)
     posts = Post.objects.filter(dateCreation__gt=startdate).values('postCategory', 'title', 'pk')
 
     for cat in Category.objects.values('pk', 'name'):
@@ -24,6 +25,7 @@ def my_job():
         for post in posts:
             if post['postCategory'] == cat['pk']:
                 id_posts_cat.append(post['pk'])
+        posts_list = render('posts_list.html', {'posts': str(id_posts_cat)})
         if not id_posts_cat == []:
             for user in User.objects.values('subscribers', 'email', 'username'):
                 if user['subscribers'] == cat['pk']:
@@ -31,7 +33,7 @@ def my_job():
                         subject=f"Еженедельная рассылка новостей!",
                         message=f"Здравствуй, {user['username']}."
                                 f"Новый список статьей в твоём любимом разделе - {cat['name']}! \n"                                
-                                f"Ссылка на статьи: http://127.0.0.1:8000/news/search?dateCreation__gt="
+                                f"{posts_list}"
                                 f"{startdate}&postCategory={cat['pk']}",
                         from_email='utochkin.rcoko92@yandex.ru',
                         recipient_list=[user['email']]
@@ -53,7 +55,7 @@ class Command(BaseCommand):
         # добавляем работу нашему задачнику
         scheduler.add_job(
             my_job,
-            trigger=CronTrigger(week='*/1'),
+            trigger=CronTrigger(second='*/5'),
             # То же, что и интервал, но задача тригера таким образом более понятна django
             id="my_job",  # уникальный айди
             max_instances=1,

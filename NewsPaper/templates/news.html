@@ -3,68 +3,68 @@
 {% block title %} News list {% endblock title %}
 
 {% block content %}
+{% load cache %}
+    {% cache 60 news_id %}
+        <table>
+            <thead>
+                <th>
+                    Заголовок
+                </th>
+                <th>
+                    Дата публикации
+                </th>
+                <th>
+                    Текст
+                </th>
+                <th>
+                    Категории
+                </th>
+            </thead>
+        {% for news in filter.qs %}
+            <tr>
+                <td>
+                    <a href="{% url 'new' news.id %}">{{ news.title|title }}</a>
+                    <a href="{% url 'news_update' news.id %}"><u>Редактировать</u></a>
 
-<table>
-    <thead>
-        <th>
-            Заголовок
-        </th>
-        <th>
-            Дата публикации
-        </th>
-        <th>
-            Текст
-        </th>
-        <th>
-            Категории
-        </th>
-    </thead>
-    {% for news in filter.qs %}
-    <tr>
-        <td>
-            <a href="{% url 'new' news.id %}">{{ news.title|title }}</a>
-            <a href="{% url 'news_update' news.id %}"><u>Редактировать</u></a>
+                    <a href="{% url 'news_delete' news.id %}"><u> Удалить </u></a>
+                </td>
+                <td>
+                    {{ news.dateCreation|date:'d M Y' }}
+                </td>
+                <td>
+                    {{ news.title|title }}
+                </td>
+                <td>
+                    {% for i in news.postCategory.all %}
+                        <a href="{% url 'new' news.id %}">{{ i }}</a>
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
 
-            <a href="{% url 'news_delete' news.id %}"><u> Удалить </u></a>
-        </td>
-        <td>
-            {{ news.dateCreation|date:'d M Y' }}
-        </td>
-        <td>
-            {{ news.title|title }}
-        </td>
-        <td>
-            {% for i in news.postCategory.all %}
-                <a href="{% url 'new' news.id %}">{{ i }}</a>
+        <a href="{% url 'news_create' %}"> Добавить новость! </a> <br>
+        <a href="{% url 'category' %}"> Подписаться на рассылку новостей ! </a> <br>
+
+        {% if is_paginated %}
+            {% if page_obj.has_previous %}
+                <a href="?page=1">First</a>
+                <a href="?page={{ page_obj.previous_page_number }}"><<<</a>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <a>{{ num }}</a>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a href="?page={{ num }}">{{ num }}</a>
+                {% endif %}
             {% endfor %}
-        </td>
-    </tr>
-    {% endfor %}
-</table>
 
-<a href="{% url 'news_create' %}"> Добавить новость! </a> <br>
-<a href="{% url 'category' %}"> Подписаться на рассылку новостей ! </a> <br>
-
-{% if is_paginated %}
-
-    {% if page_obj.has_previous %}
-        <a href="?page=1">First</a>
-        <a href="?page={{ page_obj.previous_page_number }}"><<<</a>
-    {% endif %}
-
-    {% for num in page_obj.paginator.page_range %}
-        {% if page_obj.number == num %}
-            <a>{{ num }}</a>
-        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-            <a href="?page={{ num }}">{{ num }}</a>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">>>></a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+            {% endif %}
         {% endif %}
-    {% endfor %}
-
-    {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">>>></a>
-        <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-    {% endif %}
-{% endif %}
-<br>
-
+        <br>
+{% endcache %}
 {% endblock content %}

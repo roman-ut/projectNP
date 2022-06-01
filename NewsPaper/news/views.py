@@ -5,8 +5,22 @@ from django.contrib.auth.decorators import login_required
 from .models import Post, Category, User
 from .filters import NewsFilter
 from .forms import NewsForm, AuthorForm
-from django.http import HttpResponse
 from .tasks import post_now
+from django.core.cache import cache
+
+from django.core.cache import cache
+import logging
+
+logger = logging.getLogger(__name__)
+
+# Новости
+class PostList(ListView):
+    logger.info('INFO')
+    model = Post
+    template_name = 'newsall.html'
+    context_object_name = 'newsall'
+    # queryset = Post.objects.order_by('-dateCreation') # выводим статьи в обратном порядке
+    ordering = ['-dateCreation']
 
 
 class NewsList(ListView):
@@ -25,6 +39,16 @@ class NewsList(ListView):
 class NewsDetail(DetailView):
     template_name = 'new.html'
     queryset = Post.objects.all()
+
+    def get_object(self, *args, **kwargs):
+        obj = cache.get(f'news-{self.kwargs["pk"]}',
+                        None)
+
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'news-{self.kwargs["pk"]}', obj)
+
+        return obj
 
 
 class Search(ListView):
